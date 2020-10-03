@@ -2,6 +2,7 @@
 data/
 plots/
 *.tar.gz
+*.mp4
 
 # vscode
 .vscode/
