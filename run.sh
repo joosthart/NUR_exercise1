@@ -22,14 +22,29 @@ if [ ! -d "data/CoolingTables" ]; then
 fi
 
 # Script that returns a plot
-echo "Run the first script ..."
-python3 problem1.py
+echo "Run the first problem ..."
+# python3 problem1.py
 
 # Video
 if [ ! -f "coolingrate.mp4" ]; then
   echo "Combining images into .mp4"
   ffmpeg -framerate 25 -pattern_type glob -i "plots/coolingrate_z*.png" -s:v 640x480 -c:v libx264 -profile:v high -level 4.0 -crf 10 -tune animation -preset slow -pix_fmt yuv420p -r 25 -threads 0 -f mp4 coolingrate.mp4 -y
 fi
+
+echo "Download data for problem 2."
+if [ ! -f "data/wgs.dat" ]; then
+  wget https://home.strw.leidenuniv.nl/~daalen/Handin_files/wgs.dat
+  mv wgs.dat data/wgs.dat
+fi
+
+if [ ! -f "data/wss.dat" ]; then
+  wget https://home.strw.leidenuniv.nl/~daalen/Handin_files/wss.dat
+  mv wss.dat data/wss.dat
+fi
+
+echo "Run the second script ..."
+python3 problem2.py
+
 
 # # Script that pipes output to a file
 # echo "Run the second script ..."
