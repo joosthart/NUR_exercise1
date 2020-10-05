@@ -13,9 +13,9 @@ def solve(LU, b):
     x = np.copy(b)
     y = np.zeros(b.shape, dtype=np.float32)
     for i in range(len(b)):
-        y[i] = b[i] - sum([LU[i,j]*y[j] for j in range(i)])
+        y[i] = b[i] - LU[i,:i].dot(y[:i])
     for i in reversed(range(len(b))):
-        x[i] = 1/LU[i,i] * (y[i] - sum([LU[i,j]*x[j] for j in range(i+1, len(b)-1)]))
+        x[i] = 1/LU[i,i] * (y[i] - LU[i,i+1:].dot(x[i+1:]))
     return x
 
 if __name__ == '__main__':
