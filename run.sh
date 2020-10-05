@@ -18,12 +18,13 @@ echo "Download data for problem 1."
 if [ ! -d "data/CoolingTables" ]; then
   wget https://www.strw.leidenuniv.nl/WSS08/coolingtables_highres.tar.gz
   tar -xzf coolingtables_highres.tar.gz
+  rm coolingtables_highres.tar.gz
   mv CoolingTables data/CoolingTables
 fi
 
 # Script that returns a plot
 echo "Run the first problem ..."
-# python3 problem1.py
+python3 problem1.py
 
 # Video
 if [ ! -f "coolingrate.mp4" ]; then
