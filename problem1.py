@@ -179,6 +179,8 @@ if __name__ == '__main__':
     plt.savefig('plots/1a_coolingrates.png')
     plt.close()
 
+    print('Solution to 1a saved to plots/1a_coolingrates.png.')
+
     f1.close()
     f2.close()
 
@@ -196,6 +198,7 @@ if __name__ == '__main__':
     z_range = np.linspace(z_min, z_max, z_step)
 
     L = []
+    print("Generating plots for video ...")
     for z_i in tqdm(z_range): 
         
         if z_i in z_true:
@@ -267,3 +270,5 @@ if __name__ == '__main__':
         plt.axis(ymin=1e-27, ymax=1e-19)
         plt.savefig('plots/coolingrate_z{}.png'.format(z_i), dpi=200)
         plt.close()
+    
+    print("Saved plots for video to plots/coolingrate_z*.png.")
