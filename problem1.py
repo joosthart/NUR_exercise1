@@ -5,52 +5,99 @@ from tqdm import tqdm
 import numpy as np
 import matplotlib.pyplot as plt
 
-def bisect(x_range, x_i, order=1):
-    if x_i <= x_range[0] and order==1:
+def bisect(x_range, x_i):
+    """ Find the indices of elements in x_range that enclose x_i. If x_i outside 
+        of x_range, the begin or end index is returned.
+
+    Args:
+        x_range (list): Sorted ascending list.
+        x_i (float, int): Float or int to find encloding values for
+
+    Raises:
+        RuntimeError: No edges found.
+    """
+    if x_i <= x_range[0]:
         return 0
-    if x_i >= x_range[-1] and order==1:
+    if x_i >= x_range[-1]:
         return len(x_range)-1
     
     for i in range(len(x_range)-1):
         if x_i > x_range[i] and x_i < x_range[i+1]:
             return (i, i+1)
-    raise RuntimeError
+    raise RuntimeError("No edges found.")
 
 def coolingrate(tables, density, He_mass_frac=0.258, metallicity=0.25):
+    """ Calculate the cooling rate from information in cooling tables. 
+        
+        The density and He_mass_frac should be in the Hydrogen_density_bins and 
+        Metal_free.Helium_mass_fraction_bins, since a direct match is looked up.
+
+    Args:
+        tables ([type]): [description]
+        density ([type]): [description]
+        He_mass_frac (float, optional): [description]. Defaults to 0.258.
+        metallicity (float, optional): [description]. Defaults to 0.25.
+
+    Returns:
+        [type]: [description]
+    """
+
+    # list of all elements in table
     elements = [
         x for x in tables.keys() if x not in [
             'Header', 'Metal_free', 'Solar', 'Total_Metals']
     ]
     
+    # Helium mass fraction bins of only hydrogen and helium
     metal_free_He_mass_frac = list(
         tables['Metal_free']['Helium_mass_fraction_bins']
     )
+
+    # Ratio of free electron and hydrogen number densities (n_e/n_H) as a 
+    # function of /Metal_free/Hydrogen_density_bins, 
+    # /Metal_free/Temperature_bins, and helium abundance.
     metal_free_ne_nh = list(
         tables['Metal_free']['Electron_density_over_n_h']
     )
     
+    # Find index of He mass frac, ssuming direct match in table.
     He_mass_frac_index = metal_free_He_mass_frac.index(np.float32(He_mass_frac))
+    # Find index of density bin, ssuming direct match in table.
     abundance_index = list(
         tables[elements[0]]['Hydrogen_density_bins']).index(np.float32(density)
     )
 
+    # Ratio of free electron and hydrogen number densities (n_e/n_H) as a 
+    # function of temperature at given denisty and helium mass fraction.
+    metal_free_ne_nh = list(
+        tables['Metal_free']\
+              ['Electron_density_over_n_h']\
+              [He_mass_frac_index, :,abundance_index]
+    )
+
+    # Ratio of free electron and hydrogen number densities (n_e/n_H) as a 
+    # function of temperature at given density for solar abundance.
+    solar_ne_nh = tables['Solar']\
+                        ['Electron_density_over_n_h']\
+                        [:, abundance_index]
+
+    # Normalized net cooling rate for only hydrogen and helium as a function of 
+    # /Metal_free/Hydrogen_density_bins, /Metal_free/Temperature_bins, 
+    # and helium abundance. 
     lambda_metal_free = tables['Metal_free']\
                               ['Net_Cooling']\
                               [He_mass_frac_index, :, abundance_index]
     
+    # Temperature bins (T [K])
     T = tables['Metal_free']['Temperature_bins']
     
     sum_metals = np.zeros(352)
     for e in elements:
+        # Normalized, net cooling rate e as a function of temperature for 
+        # Hydrogen density 'density'.
         lambda_i_solar = tables[e]['Net_Cooling'][:,abundance_index]
         
-        metal_free_ne_nh = tables['Metal_free']\
-                                 ['Electron_density_over_n_h']\
-                                 [He_mass_frac_index, :,abundance_index]
-        solar_ne_nh = tables['Solar']\
-                            ['Electron_density_over_n_h']\
-                            [:, abundance_index]
-        
+        # Calulating the cooling contribution of element e and addind to total.
         sum_metals += lambda_i_solar*(metal_free_ne_nh/solar_ne_nh)*metallicity
         
     coolingrate = lambda_metal_free + sum_metals

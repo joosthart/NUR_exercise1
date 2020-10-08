@@ -43,24 +43,11 @@ if [ ! -f "data/wss.dat" ]; then
   mv wss.dat data/wss.dat
 fi
 
-echo "Run the second script ..."
+echo "Run the second problem ..."
 python3 problem2.py
 
-
-# # Script that pipes output to a file
-# echo "Run the second script ..."
-# python3 helloworld.py > helloworld.txt
-
-# # Script that saves data to a file
-# echo "Run the third script ..."
-# python3 cos.py
-
-# # Script that generates movie frames
-# echo "Run the fourth script ..."
-# python3 sinemovie.py
-
-# # code that makes a movie of the movie frames
-# ffmpeg -framerate 25 -pattern_type glob -i "plots/snap*.png" -s:v 640x480 -c:v libx264 -profile:v high -level 4.0 -crf 10 -tune animation -preset slow -pix_fmt yuv420p -r 25 -threads 0 -f mp4 sinemovie.mp4
+echo "Run the third problem ..."
+python3 problem3.py
 
 # echo "Generating the pdf"
 

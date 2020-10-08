@@ -1,0 +1,47 @@
+\section{Satellite galaxies around a massive central}
+In this exercise, we are going to look at the spherical distribution of satellite galaxies around a central. The given number density profile is given by:
+\begin{equation}
+  n(x) = A \langle N_\mathrm{sat}\rangle \left( \frac{x}{b} \right) ^{a-3} \mathrm{exp} \left[ - \left( \frac{x}{b} \right)^{c} \right],
+\end{equation}
+where $x$ is the radius relative to the virial radius, $x\equiv r/r_\mathrm{vir}$, and $a$, $b$ and $c$ are free parameters controlling the small-scale slope, transition scale and steepness of the exponential drop-off, respectively. $A$ normalizes the profile such that the 3D spherical integral from $x=0$ to $x_\mathrm{max}$ yields the average total number of satellites.
+
+\subsection*{3a}
+Here, the integral will be solved for A, given that $a = 2.2$, $b = 0.5$, $c = 3.1$ and $\langle N_\mathrm{sat}\rangle = 100$. The first thing to notice is that the integrant only depends on $r$, thus we can write
+\begin{equation}
+  \int_0^{5r} \int_0^{2\pi} \int_0^{\pi} A \langle N_\mathrm{sat}\rangle \left( \frac{x}{b} \right) ^{a-3} \mathrm{exp} \left[ - \left( \frac{x}{b} \right)^{c} \right] r^2 \sin\theta \mathrm{d}\theta \mathrm{d}\phi \mathrm{d}r = 4\pi \int_0^{5r} A \langle N_\mathrm{sat}\rangle \left( \frac{x}{b} \right) ^{a-3} \mathrm{exp} \left[ - \left( \frac{x}{b} \right)^{c} \right] r^2 \mathrm{d}r.
+\end{equation}
+Now using the coordinate transformation $r = r_{\mathrm{vir}}x$ and rewriting the previous equation, we find an expression for $A$:
+\begin{equation}
+  A = \left[ 4\pi b^2 r_{\mathrm{vir}}^3 \int_0^5 \left( \frac{x}{b} \right)^{a-1} \mathrm{exp} \left[ - \left( \frac{x}{b} \right)^{c} \right] \mathrm{d}x   \right]^{-1}.
+\end{equation}
+Now we have a one dimensional integral. This integral is solved using Romberg's algorithm. The implementation can be found in the code below. The final answer contains a factor $r_\mathrm{{vir}}^{-3}$.
+
+\subsection*{3b}
+Figure \ref{fig:3b} shows five points at $n(10^{−4})$, $n(10^{−2})$, $n(10^{−1})$ and $n(1)$ for the same parameter values as the previous exercise. Using these four points, and $n(5)$ (which is outside the plot, since $n(5)=0$), interpolation is performed in log-space. Several interpolation methods have been tested. The linear interpolation results are shown in the figure. This interpolation methode yielded the best results. A cubic spline has also been tested, which yielde better performance, when fitted in log-space. However, I have not been able to implement a cubic spline myself, thus it is not included. The interpolation methods tested I implemented myself are linear and cubic.
+
+\begin{figure}[h!]
+  \centering
+  \includegraphics[width=0.9\linewidth]{./plots/3b_galaxy_satelite_numberdensity.png}
+  \caption{Linear interpolation of equation 8 with $a = 2.2$, $b = 0.5$, $c = 3.1$ and $\langle N_\mathrm{sat}\rangle = 100$ and the obtained value for $A$ in exercise 3a. The green dashed line shows the true value of $n(x)$, the orange solid line the interpolation and the blue points the function evaluations used for the interpolation.}
+  \label{fig:3a}
+\end{figure}
+
+\subsection*{3c}
+The goal of this final exercise is to implement a function that returns the Poisson probability for given $k$ and $\lambda$. The definition of the Poisson distribution is:
+\begin{equation}
+  P_\lambda(k)=\frac{\lambda^k e^{\lambda}}{k!}.
+\end{equation}
+The function should be able to calculate the value of the Poisson distribution up to at least six significant digits for the values: $(\lambda, k)\ =\ (1, 0),\ (5, 10),\ (3, 21)\ \mathrm{and}\ (2.6, 40)$. A problem that arises when calculating Poisson probabilities is the size of the individual terms. It is, therefore, not enough to just code up the Poisson distribution as is and just plug in the numbers. I Have thus chosen to loop from 1 to $k$ and and calculate the fraction $\lambda / k_i$ each loop. This fraction is then multiplied with the previous loop fraction. In equation this yields
+\begin{equation}
+  \frac{\lambda^k}{k!} = \prod_{i=1}^k \frac{\lambda}{i}.
+\end{equation}
+This way, $\lambda^k$ and $k!$ do not need to be calculated right away, which would lead to overflows. At the end the product is multiplied by $e^{-\lambda}$.
+
+Although effective for the $\lambda$ and $k$ values above, this method is not sufficient for higher $\lambda$ and $k$. $(\lambda, k) = (101, 200)$ can not be calculate with this algorithm.
+
+\pagebreak
+
+\subsection*{Code}
+\lstinputlisting{problem3.py}
+
+\newpage

@@ -4,6 +4,14 @@ plots/
 *.tar.gz
 *.mp4
 
+# Latex
+*.log
+*.bbl
+*.aux
+*.blg
+main.pdf
+*.gz
+
 # vscode
 .vscode/
 
