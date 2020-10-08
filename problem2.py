@@ -1,12 +1,42 @@
 import numpy as np
 
-def crout(LU):
-    for k in range(LU.shape[1]):
-        for i in range(k+1,LU.shape[0]):
-            LU[i,k] = LU[i,k]/LU[k,k]
-            for j in range(k+1, LU.shape[1]):
-                LU[i,j] = LU[i,j]-LU[i,k]*LU[k,j]
-    return LU
+def matprint(mat, fmt="g"):
+    col_maxes = [max([len(("{:"+fmt+"}").format(x)) for x in col]) for col in mat.T]
+    for x in mat:
+        for i, y in enumerate(x):
+            print(("{:"+str(col_maxes[i])+fmt+"}").format(y), end="  ")
+        print("")
+
+def crout(M, separate=False):
+    """ Generating LU-composition for input matrix M Using the improved Crout's 
+    algorithm. L and U matrices are returned as 1 matrix, where the fact that 
+    the diagnonal elements of the L matrix has been exploited. If the separate 
+    flag is set to true, separate L and U matrices are returned. 
+
+    Args:
+        M (list, numpy.array): N x N array for which to calulate LU-decomposition
+        separate (bool, optional): Return separate L and U matrix. Default set 
+            to False.
+
+    Returns:
+        LU decomposition of M.
+    """
+    for k in range(M.shape[1]):
+        for i in range(k+1,M.shape[0]):
+            M[i,k] = M[i,k]/M[k,k]
+            for j in range(k+1, M.shape[1]):
+                M[i,j] = M[i,j]-M[i,k]*M[k,j]
+    
+    if separate:
+        L = np.zeros(M.shape, dtype=np.dtype(M[0,0]))
+        U = np.zeros(M.shape, dtype=np.dtype(M[0,0]))
+        for i in range((M.shape[0])):
+            L[i,:i+1] = M[i,:i+1]
+            U[i,i:] = M[i,i:]
+            L[i,i] = 1
+        return L,U
+
+    return M
 
 def solve(LU, b):
     y = []
@@ -21,10 +51,11 @@ if __name__ == '__main__':
     Wgs = np.loadtxt('data/wgs.dat', dtype=np.float32)
 
     # 2a
-    LU = crout(np.copy(Wss))
+    L, U = crout(np.copy(Wss), True)
     print('Solutions for 2a:')
     print('LU decomposition of Wgs:')
-    print(LU)
+    print('L: {}'.format(L))
+    print('U: {}'.format(U))
     x_hat = solve(LU, np.copy(Wgs))
     print('Solution for f: {}'.format(x_hat))
     print('Sum of f: {}'.format(sum(x_hat)))

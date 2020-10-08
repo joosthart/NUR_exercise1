@@ -223,13 +223,8 @@ if __name__ == '__main__':
             tablename_lower =  'z_{:.3f}.hdf5'.format(z_lower)
             tablename_upper =  'z_{:.3f}.hdf5'.format(z_upper)
             
-            tables_lower = h5py.File(
-                os.path.join(datadir, tablename_lower), 
-                'r'
-            )
-            tables_upper = h5py.File(
-                os.path.join(datadir, tablename_upper), 
-                'r'
+            tables_lower = h5py.File(os.path.join(datadir, tablename_lower),'r')
+            tables_upper = h5py.File(os.path.join(datadir, tablename_upper),'r')
             )        
             
             # Calculate lower cooling rate
