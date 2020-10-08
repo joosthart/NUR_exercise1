@@ -39,7 +39,8 @@ def coolingrate(tables, density, He_mass_frac=0.258, metallicity=0.25):
         metallicity (float, optional): [description]. Defaults to 0.25.
 
     Returns:
-        [type]: [description]
+        List with temperatures and list with cooling rates as function of 
+        temperature.
     """
 
     # list of all elements in table
@@ -105,15 +106,33 @@ def coolingrate(tables, density, He_mass_frac=0.258, metallicity=0.25):
     return T, coolingrate
 
 def interpolate(y1, y2, x1, x2, x, log=False):
+    """ Linear interpolator. 
+
+    Args:
+        y1 (int/float): y value of left interval boundry.
+        y2 (int/float): y value of right interval boundry.
+        x1 (int/flout): x value of left interval boundry.
+        x2 (int/float): x value of right interval boundry.
+        x (int/float): x value for which to calculate interpolation.
+        log (bool, optional): If true, interpolate linear in log-space. Defaults
+             to False.
+
+    Returns:
+        float: interpolated y(x)
+    """
     if log:
+        # transform values to log space
         y1 = np.log10(y1)
         y2 = np.log10(y2)
         x1 = np.log10(x1)
         x2 = np.log10(x2)
         x = np.log10(x)
+
+    # Calculate y(x)
     y = (y2 - y1) / (x2 - x1) * (x - x1) + y1
     
     if log:
+        # transform result back
         y = 10**y
     return y
 
@@ -124,13 +143,16 @@ if __name__ == '__main__':
     f1 = h5py.File(os.path.join(datadir, "z_3.017.hdf5"), 'r')
     f2 = h5py.File(os.path.join(datadir, "z_2.829.hdf5"), 'r')
     
+    # loop over denisties
     for i in [1, 1e-2, 1e-4, 1e-6]:
+        # Calculate cooling rate, as function of temperature, at z=2.829.
         T, L_z2829 = coolingrate(
                          tables=f1, 
                          density=i, 
                          He_mass_frac=0.258, 
                          metallicity=0.25
                      )
+        # Calculate cooling rate, as function of temperature, at z=3.017.
         T, L_z3017 = coolingrate(
                          tables=f2, 
                          density=i, 
@@ -142,6 +164,7 @@ if __name__ == '__main__':
         z3017 = 3.017
         z = 3
         
+        # interpolate cooling rate for z=3.00.
         L_z3000 = interpolate(L_z2829, L_z3017, z2829, z3017, z)
         
         plt.loglog(T, L_z3000, label=r'$\rho={}$'.format(i))
@@ -160,21 +183,23 @@ if __name__ == '__main__':
     f2.close()
 
     # 1b
-    n = 1e-4
-    metallicity = 0.5
+    n = 1e-4 # number density
+    metallicity = 0.5 # fraction of solar metallicity
     z_true = sorted([
         float(x[2:7]) for x in os.listdir(datadir) 
             if not any(i in x for i in ['nocompton', 'collis', 'photodis']) 
             and x.endswith('.hdf5')
-    ])
+    ]) # List with true z values in dataset
 
+    # set range for new z
     z_min, z_max, z_step = 0, 9, 100
-    z_range = np.linspace(0,9,100)
+    z_range = np.linspace(z_min, z_max, z_step)
 
     L = []
     for z_i in tqdm(z_range): 
         
         if z_i in z_true:
+            # if z_i in tables, use that insted of interpolating.
             tablename = 'z_{:.3f}.hdf5'.format(z_i)
             tables = h5py.File(os.path.join(datadir, tablename), 'r')
             T, L_i = coolingrate(
@@ -185,9 +210,12 @@ if __name__ == '__main__':
             )
             L.append(L_i)
         else:
+            # Find neigboring x values
             z_idx = bisect(z_true, z_i)
+            # handle edge cases
             if isinstance(z_idx, int) and z_idx == len(z_true)-1:
                 z_idx = (z_idx-1, z_idx)
+
             z_lower, z_upper = z_true[z_idx[0]], z_true[z_idx[1]]
             tablename_lower =  'z_{:.3f}.hdf5'.format(z_lower)
             tablename_upper =  'z_{:.3f}.hdf5'.format(z_upper)
@@ -201,6 +229,7 @@ if __name__ == '__main__':
                 'r'
             )        
             
+            # Calculate lower cooling rate
             T, L_lower = coolingrate(
                 tables=tables_lower, 
                 density=n, 
@@ -208,12 +237,15 @@ if __name__ == '__main__':
                 metallicity=metallicity
             )
             
+            # Calculate upper cooling rate
             _, L_upper = coolingrate(
                 tables=tables_upper, 
                 density=n, 
                 He_mass_frac=0.258, 
                 metallicity=metallicity
             )
+
+            # interpolate cooling rate for z_i
             L_i = interpolate(L_lower, L_upper, z_lower, z_upper, z_i)
             
             L.append(L_i)
@@ -233,6 +265,5 @@ if __name__ == '__main__':
         )
         plt.xlabel(r'$T \ [\mathrm{K}]$')
         plt.axis(ymin=1e-27, ymax=1e-19)
-    #     plt.legend(loc=2)
         plt.savefig('plots/coolingrate_z{}.png'.format(z_i), dpi=200)
         plt.close()
