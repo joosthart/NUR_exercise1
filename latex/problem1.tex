@@ -1,9 +1,9 @@
 
 \section{Cooling rates in cosmological simulations}
-In this section the results of exercise 1 will be discussed. In this exercise, cooling tables are used to calculate the cooling rate as a function of redshift, temperature and density. This is done by interpolating the tables.
+In this section, the results of exercise 1 will be discussed. In this exercise, cooling tables are used to calculate the cooling rate as a function of redshift, temperature and density. This is done by interpolating the tables.
 
 \subsection*{1a}
-In this exercise a plot of the cooling rate is made as a function of temperature for different densities at a redshift of $z=3$ and a metallicity of 25\% solar. The cooling rate is given by 
+In this exercise, a plot of the cooling rate is made as a function of temperature for different densities at a redshift of $z=3$ and metallicity of 25\% solar. The cooling rate is given by 
 \begin{equation}
     \Lambda = \Lambda_{\mathrm{H},\mathrm{He}} + \sum_{i>\mathrm{He}} \Lambda_{i,\odot} \frac{n_\mathrm{e}/n_\mathrm{H}}{(n_\mathrm{e}/n_\mathrm{H})_\odot} 10^{[i/\mathrm{H}]},
 \end{equation}
@@ -11,17 +11,17 @@ where $10^{[i/\mathrm{H}]} \equiv \frac{n_\mathrm{i}/n_\mathrm{H}}{(n_\mathrm{i}
 
 With the above information, $\Lambda$ can be calculated for a given redshift using the cooling tables. Since there is no table for $z=3$, we need to interpolate the cooling rates for $z=2.829$ and $z=3.017$, of which tables are available. Linear interpolation is used.
 
-Figure \ref{fig:coolingrates} shows the cooling rate as a function of temperature for different densities.
+Figure \ref{fig:1a_coolingrates} shows the cooling rate as a function of temperature for different densities.
 
-\begin{figure}[h!]
+\begin{figure}[!ht]
   \centering
   \includegraphics[width=0.9\linewidth]{./plots/1a_coolingrates.png}
   \caption{Cooling rates at $z=3$ for different densities are shown as a function of temperature. These cooling rates are calculated from tables for cooling rates at $z=2.829$ and $z=3.017$. Linear interpolation is used to obtain cooling rates for $z=3$.}
-  \label{fig:coolingrates}
+  \label{fig:1a_coolingrates}
 \end{figure}
 
 \subsection*{1b}
-For this exercise, the same interpolator is used to calculate the cooling rates for redshifts ranging from 0 - 9 for a denisty of $n = 0.0001 \mathrm{cm}^{−3}$ and a metallicity of 50\% solar metallicity. These plots are combined into a movie, simulating the change in cooling rate as a function of redshift and temperature. This movie can be found in the root folder and is called \texttt{coolingrate.mp4}.
+For this exercise, the same interpolator is used to calculate the cooling rates for redshifts ranging from 0 - 9 for a density of $n = 0.0001 \mathrm{cm}^{−3}$ and metallicity of 50\% solar metallicity. These plots are combined into a movie, simulating the change in cooling rate as a function of redshift and temperature. This movie can be found in the root folder and is called \texttt{coolingrate.mp4}.
 
 \pagebreak
 

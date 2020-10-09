@@ -1,4 +1,4 @@
-\section{Satellite Falaxies Around a Massive Central}
+\section{Satellite Galaxies Around a Massive Central}
 In this exercise, we are going to look at the spherical distribution of satellite galaxies around a central. The given number density profile is given by:
 \begin{equation}
   n(x) = A \langle N_\mathrm{sat}\rangle \left( \frac{x}{b} \right) ^{a-3} \mathrm{exp} \left[ - \left( \frac{x}{b} \right)^{c} \right],
@@ -17,13 +17,13 @@ Now using the coordinate transformation $r = r_{\mathrm{vir}}x$,  $\mathrm{d}r =
 Now we have a one dimensional integral. This integral is solved using Romberg's algorithm. The implementation can be found in the code below. The obtained normalization factor is: $$A = \input{./output/3a_a.dat}r_\mathrm{vir}^{-3}.$$
 
 \subsection*{3b}
-Figure \ref{fig:3b} shows five points at $n(10^{−4})$, $n(10^{−2})$, $n(10^{−1})$ and $n(1)$ for the same parameter values as the previous exercise. Using these four points, and $n(5)$ (which is outside the plot, since $n(5)=0$), interpolation is performed in log-space. Several interpolation methods have been tested. The linear interpolation results are shown in the figure. This interpolation methode yielded the best results. A cubic spline has also been tested, which yielde better performance, when fitted in log-space. However, I have not been able to implement a cubic spline myself, thus it is not included. The interpolation methods tested I implemented myself are linear and cubic.
+Figure \ref{fig:3b} shows five points at $n(10^{−4})$, $n(10^{−2})$, $n(10^{−1})$ and $n(1)$ for the same parameter values as the previous exercise. Using these four points, and $n(5)$ (which is outside the plot, since $n(5)=0$), interpolation is performed in log-space. Several interpolation methods have been tested. The linear interpolation results are shown in the figure. This interpolation method yielded the best results. A cubic spline has also been tested, which yields better performance when fitted in log-space. However, I have not been able to implement a cubic spline myself, thus it is not included. The interpolation methods tested I implemented myself are linear and cubic.
 
-\begin{figure}[h!]
+\begin{figure}[!ht]
   \centering
   \includegraphics[width=0.9\linewidth]{./plots/3b_galaxy_satelite_numberdensity.png}
   \caption{Linear interpolation of equation 8 with $a = 2.2$, $b = 0.5$, $c = 3.1$ and $\langle N_\mathrm{sat}\rangle = 100$ and the obtained value for $A$ in exercise 3a. The green dashed line shows the true value of $n(x)$, the orange solid line the interpolation and the blue points the function evaluations used for the interpolation.}
-  \label{fig:3a}
+  \label{fig:3b}
 \end{figure}
 
 \subsection*{3c}
@@ -31,15 +31,15 @@ The goal of this final exercise is to implement a function that returns the Pois
 \begin{equation}
   P_\lambda(k)=\frac{\lambda^k e^{\lambda}}{k!}.
 \end{equation}
-The function should be able to calculate the value of the Poisson distribution up to at least six significant digits for the values: $(\lambda, k)\ =\ (1, 0),\ (5, 10),\ (3, 21)\ \mathrm{and}\ (2.6, 40)$. A problem that arises when calculating Poisson probabilities is the size of the individual terms. It is, therefore, not enough to just code up the Poisson distribution as is and just plug in the numbers. I Have thus chosen to loop from 1 to $k$ and and calculate the fraction $\lambda / i$ each loop, with $i$ from 1 to $k$. This value is multiplied with $e^{l/k}$. Every loop the new value is multiplied with the value of the previous loop. In equation this yields
+The function should be able to calculate the value of the Poisson distribution up to at least six significant digits for the values: $(\lambda, k)\ =\ (1, 0),\ (5, 10),\ (3, 21)\ \mathrm{and}\ (2.6, 40)$. A problem that arises, when calculating Poisson probabilities, is the size of the individual terms. It is, therefore, not enough to just code up the Poisson distribution as is and just plug in the numbers. I Have thus chosen to loop from 1 to $k$ and calculate the fraction $\lambda / i$ each loop, with $i$ from 1 to $k$. In the loop, this value is multiplied with $e^{l/k}$. Every loop the new value is multiplied with the value of the previous loop. Expressed in equations this yields:
 \begin{equation}
   \frac{\lambda^k}{k!} = \prod_{i=1}^k \frac{\lambda}{i} e^{l/k}.
 \end{equation}
 This way, $\lambda^k$ and $k!$ do not need to be calculated right away, which could lead to overflows. 
 
-In figure \ref{3c_P} the obtained values for Poisson probabilities are shown.
+In figure \ref{fig:3c_P} the obtained values for Poisson probabilities are shown.
 
-\begin{figure}[h!]
+\begin{figure}[!ht]
   \centering
   \lstinputlisting[basicstyle=\ttfamily, xleftmargin=.35\textwidth]{./output/3c_poisson.txt}
   \caption{Obtained $\mathbf{f}$ after single iterative improvement.}

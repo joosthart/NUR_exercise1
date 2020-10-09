@@ -30,7 +30,7 @@ fi
 
 # Script that returns a plot
 echo "Run the first problem ..."
-python3 problem1.py
+python3 code/problem1.py
 
 # Video
 if [ ! -f "coolingrate.mp4" ]; then
@@ -50,16 +50,13 @@ if [ ! -f "data/wss.dat" ]; then
 fi
 
 echo "Run the second problem ..."
-python3 problem2.py
+python3 code/problem2.py
 
 echo "Run the third problem ..."
-python3 problem3.py
+python3 code/problem3.py
 
-# echo "Generating the pdf"
+echo "Generating the pdf"
+pdflatex -interaction=nonstopmode -jobname=solutions main.tex
 
-# pdflatex template.tex
-# bibtex template.aux
-# pdflatex template.tex
-# pdflatex template.tex
 
 

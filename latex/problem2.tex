@@ -1,5 +1,5 @@
 \section{Redshift distribution of galaxies}
-In this exercise the redshift distribution of galaxies is calculated using cross-correlating galaxy positions with spectroscopic sources, with known redshifts. Galaxies are most likely to be at the redshift of sources they cluster strongest with. The cross-correlation signal $w$ of a galaxy sample $g$ with spectroscopic sample $s$ in a redshift bin $z_i$, can be written as a linear combination of the cross-correlations of the spectroscopic sources with those at different redshifts:
+Here, the redshift distribution of galaxies is calculated using cross-correlating galaxy positions with spectroscopic sources, with known redshifts. Galaxies are most likely to be at the redshift of sources they cluster strongest with. The cross-correlation signal $w$ of a galaxy sample $g$ with spectroscopic sample $s$ in a redshift bin $z_i$, can be written as a linear combination of the cross-correlations of the spectroscopic sources with those at different redshifts:
 
 \begin{equation}
     \label{eq:cc}
@@ -11,7 +11,7 @@ $f_j$ is here the fraction of galaxies that are in redshift bin $z_j$.
 In this exercise, an idealized data, containing $w_{gs}$ and $w_{ss}$ set is used, which has a unique solution for $f_j$. The dataset has 16 redshift bins equally spaced between 0 and 0.8. 
 
 \subsection*{2a}
-The goal is to find a solution for the unknown $f_j$. Note that equation \ref{eq:cc} can bew written in matrix form as follows:
+The goal is to find a solution for the unknown $f_j$. Note that equation \ref{eq:cc} can be written in matrix form as follows:
 \begin{equation}
     W_{gs} = W_{ss}\mathbf{f}.
 \end{equation}
@@ -19,21 +19,21 @@ This equation can be solved for $\mathbf{f}$ numerically using an LU decompositi
 
 Inspection of the matrix $W_{ss}$ showed that the maximum row values are already on the diagonal. Therefore, no pivoting is needed. Ones obtained the LU matrix, the system is solved for $\mathbf{f}$ using first forward substitution on the upper half of the LU matrix, followed by backward substitution of the lower half. The obtained $L$ and $U$ matrices and the obtained values for $\mathbf{f}$ are shown in figures \ref{fig:2a_L}, \ref{fig:2a_U} and \ref{fig:2a_f}, respectively.
 
-\begin{figure}[h!]
+\begin{figure}[!ht]
     \centering
     \lstinputlisting[basicstyle=\ttfamily\tiny]{./output/2a_L_matrix.txt}
     \caption{L matrix}
     \label{fig:2a_L}
 \end{figure}
 
-\begin{figure}[h!]
+\begin{figure}[!ht]
     \centering
     \lstinputlisting[basicstyle=\ttfamily\tiny]{./output/2a_U_matrix.txt}
     \caption{U matrix}
     \label{fig:2a_U}
 \end{figure}
 
-\begin{figure}[h!]
+\begin{figure}[!ht]
     \centering
     \lstinputlisting[basicstyle=\ttfamily, xleftmargin=.4\textwidth]{./output/2a_f_vector.txt}
     \caption{Obtained $\mathbf{f}$ using above L and U matrices.}
@@ -57,13 +57,13 @@ This can be rewritten to obtain
 \end{equation}
 We can thus solve for $\mathbf{\delta}_f$ and subtract this from our initial estimate $\hat{\mathbf{f}}$ to obtain a single iterative improvement.
 
-This method is used in the code below to calculate a first order improvement on the estimate in 2a. My first version of the code used for-loops to solve the equations using the generated LU-decomposition. I later realized that I could also do it with matrix operations and implemented that, since it is more efficient in Python. In my first version, the estimate improved a few orders of magnitude when doing a first order improvement. However, in my new version, the fist estimate was significantly better than with the for-loop method. A single iterative improvement makes the prediction worse in my latest version of the code. I think that this is due to the accumulation of errors in the for-loop method. The current method with matrix operations might accumulate less round off errors while solving the system. The sum of $\hat{\mathbf{f}}$ of the first estimate is just $\sim 10^-8$ different from 1. This means that the solution is machine error limited for single point precision. Therefore, single iterative improvement would not improve the estimate.
+This method is used in the code below to calculate a first-order improvement on the estimate in 2a. My first version of the code used for-loops to solve the equations using the generated LU-decomposition. I later realized that I could also do it with matrix operations and implemented that since it is more efficient in Python. In my first version, the estimate improved a few orders of magnitude when doing a first-order improvement. However, in my new version, the first estimate was significantly better than with the for-loop method. A single iterative improvement makes the prediction worse in my latest version of the code. I think that this is due to the accumulation of errors in the for-loop method. The current method with matrix operations might accumulate less round off errors while solving the system. The sum of $\hat{\mathbf{f}}$ of the first estimate is just $\sim 10^-8$ different from 1. This means that the solution is machine error limited for single-point precision. Therefore, a single iterative improvement would not improve the estimate.
 
-The code is also tested with double point precision. In this case single iterative improvement does improve the estimate.
+The code is also tested with double point precision. In this case, a single iterative improvement does improve the estimate.
 
 In figure \ref{fig:2b_f}, the single iterative improved f is shown.
 
-\begin{figure}[h!]
+\begin{figure}[!ht]
     \centering
     \lstinputlisting[basicstyle=\ttfamily, xleftmargin=.4\textwidth]{./output/2a_f_vector.txt}
     \caption{Obtained $\mathbf{f}$ after single iterative improvement.}

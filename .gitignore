@@ -1,9 +1,11 @@
-# Runtime directories
+# Runtime generated directories and files
 data/
 plots/
 output/
 *.tar.gz
 *.mp4
+*.pdf
+
 
 # Latex
 *.log
