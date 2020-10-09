@@ -1,6 +1,12 @@
 import numpy as np
 
 def write_mat_to_file(M, filename):
+    """Writing Matrix to a file with 5 decimal numbers.
+
+    Args:
+        M (list): n x m list/array
+        filename (str): filename where to store matrix.
+    """
     file=''
     for i in range(M.shape[0]):
         line = ''
@@ -12,6 +18,12 @@ def write_mat_to_file(M, filename):
         f.write(file)
 
 def write_vec_to_file(f, filename):
+    """Writing list as column vector to a file with 9 decimal numbers.
+
+    Args:
+        f (list): list/array
+        filename (str): filename where to store vector.
+    """
     file=''
     for i in range(f.shape[0]):
         file += '{:.9f}\n'.format(f[i])
@@ -34,8 +46,10 @@ def crout(M, separate=False):
     """
     for k in range(M.shape[1]):
         for i in range(k+1,M.shape[0]):
+            # Calculate L part of LU matrix
             M[i,k] = M[i,k]/M[k,k]
             for j in range(k+1, M.shape[1]):
+                # Calculate U part of LU matrix
                 M[i,j] = M[i,j]-M[i,k]*M[k,j]
     
     if separate:
