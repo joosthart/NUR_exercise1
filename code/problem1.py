@@ -223,7 +223,7 @@ if __name__ == '__main__':
             
             tables_lower = h5py.File(os.path.join(datadir, tablename_lower),'r')
             tables_upper = h5py.File(os.path.join(datadir, tablename_upper),'r')
-            )        
+                    
             
             # Calculate lower cooling rate
             T, L_lower = coolingrate(
