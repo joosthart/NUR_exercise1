@@ -19,23 +19,23 @@ This equation can be solved for $\mathbf{f}$ numerically using an LU decompositi
 
 Inspection of the matrix $W_{ss}$ showed that the maximum row values are already on the diagonal. Therefore, no pivoting is needed. Ones obtained the LU matrix, the system is solved for $\mathbf{f}$ using first forward substitution on the upper half of the LU matrix, followed by backward substitution of the lower half. The obtained $L$ and $U$ matrices and the obtained values for $\mathbf{f}$ are shown in figures \ref{fig:2a_L}, \ref{fig:2a_U} and \ref{fig:2a_f}, respectively.
 
-\begin{figure}[H]
+\begin{figure}[h!]
     \centering
-    \lstinputlisting[basicstyle=\ttfamily\tiny]{output/2a_L_matrix.txt}
+    \lstinputlisting[basicstyle=\ttfamily\tiny]{./output/2a_L_matrix.txt}
     \caption{L matrix}
     \label{fig:2a_L}
 \end{figure}
 
-\begin{figure}[H]
+\begin{figure}[h!]
     \centering
-    \lstinputlisting[basicstyle=\ttfamily\tiny]{output/2a_U_matrix.txt}
+    \lstinputlisting[basicstyle=\ttfamily\tiny]{./output/2a_U_matrix.txt}
     \caption{U matrix}
     \label{fig:2a_U}
 \end{figure}
 
-\begin{figure}[H]
+\begin{figure}[h!]
     \centering
-    \lstinputlisting[basicstyle=\ttfamily, xleftmargin=.4\textwidth]{output/2a_f_vector.txt}
+    \lstinputlisting[basicstyle=\ttfamily, xleftmargin=.4\textwidth]{./output/2a_f_vector.txt}
     \caption{Obtained $\mathbf{f}$ using above L and U matrices.}
     \label{fig:2a_f}
 \end{figure}
@@ -65,14 +65,14 @@ In figure \ref{fig:2b_f}, the single iterative improved f is shown.
 
 \begin{figure}[h!]
     \centering
-    \lstinputlisting[basicstyle=\ttfamily, xleftmargin=.4\textwidth]{output/2a_f_vector.txt}
+    \lstinputlisting[basicstyle=\ttfamily, xleftmargin=.4\textwidth]{./output/2a_f_vector.txt}
     \caption{Obtained $\mathbf{f}$ after single iterative improvement.}
     \label{fig:2b_f}
 \end{figure}
 
 \subsection*{Code}
 
-\lstinputlisting[language=python]{problem2.py}
+\lstinputlisting[language=python]{./code/problem2.py}
 
 
 \newpage
