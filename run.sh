@@ -28,7 +28,11 @@ if [ ! -d "data/CoolingTables" ]; then
   mv CoolingTables data/CoolingTables
 fi
 
-# Script that returns a plot
+# Creating virtual environment and installing dependencies
+python3 -m venv env
+source env/bin/activate
+pip3 install -r requirements.txt
+
 echo "Run the first problem ..."
 python3 code/problem1.py
 
