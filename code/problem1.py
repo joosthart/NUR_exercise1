@@ -196,6 +196,7 @@ if __name__ == '__main__':
     z_range = np.linspace(z_min, z_max, z_step)
 
     L = []
+    z_lower_prev, z_upper_prev = -1,-1
     print("Generating plots for video ...")
     for z_i in tqdm(z_range): 
         
@@ -210,6 +211,7 @@ if __name__ == '__main__':
                 metallicity=metallicity
             )
             L.append(L_i)
+            z_upper_prev = z_i
         else:
             # Find neigboring x values
             z_idx = bisect(z_true, z_i)
@@ -218,34 +220,37 @@ if __name__ == '__main__':
                 z_idx = (z_idx-1, z_idx)
 
             z_lower, z_upper = z_true[z_idx[0]], z_true[z_idx[1]]
-            tablename_lower =  'z_{:.3f}.hdf5'.format(z_lower)
-            tablename_upper =  'z_{:.3f}.hdf5'.format(z_upper)
             
-            tables_lower = h5py.File(os.path.join(datadir, tablename_lower),'r')
-            tables_upper = h5py.File(os.path.join(datadir, tablename_upper),'r')
-                    
+            if z_lower_prev != z_lower:
+                tablename_lower =  'z_{:.3f}.hdf5'.format(z_lower)
+                tables_lower = h5py.File(os.path.join(datadir, tablename_lower),'r')
+                # Calculate lower cooling rate
+                T, L_lower = coolingrate(
+                    tables=tables_lower, 
+                    density=n, 
+                    He_mass_frac=0.258, 
+                    metallicity=metallicity
+                )
+            if z_lower == z_upper_prev:
+                T, L_lower = T, L_upper
+            if z_upper_prev != z_upper:
+                tablename_upper =  'z_{:.3f}.hdf5'.format(z_upper)
+                tables_upper = h5py.File(os.path.join(datadir, tablename_upper),'r')
+                # Calculate upper cooling rate
+                _, L_upper = coolingrate(
+                    tables=tables_upper, 
+                    density=n, 
+                    He_mass_frac=0.258, 
+                    metallicity=metallicity
+                )
             
-            # Calculate lower cooling rate
-            T, L_lower = coolingrate(
-                tables=tables_lower, 
-                density=n, 
-                He_mass_frac=0.258, 
-                metallicity=metallicity
-            )
-            
-            # Calculate upper cooling rate
-            _, L_upper = coolingrate(
-                tables=tables_upper, 
-                density=n, 
-                He_mass_frac=0.258, 
-                metallicity=metallicity
-            )
-
             # interpolate cooling rate for z_i
             L_i = interpolate(L_lower, L_upper, z_lower, z_upper, z_i)
             
             L.append(L_i)
-            
+
+            z_lower_prev = z_lower
+            z_upper_prev = z_upper    
         
         plt.loglog(T, L_i, label=r'$z={:.3f}$'.format(z_i))
         plt.text(
@@ -261,5 +266,7 @@ if __name__ == '__main__':
         )
         plt.xlabel(r'$T \ [\mathrm{K}]$')
         plt.axis(ymin=1e-27, ymax=1e-19)
-        plt.savefig('plots/coolingrate_z{}.png'.format(z_i), dpi=200)
+        plt.savefig('plots/coolingrate_z{}.png'.format(z_i))
         plt.close()
+
+        
