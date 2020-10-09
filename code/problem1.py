@@ -7,6 +7,7 @@ import numpy as np
 import matplotlib.pyplot as plt
 import matplotlib
 
+# Speed up plotting
 matplotlib.use('Agg')
 
 def bisect(x_range, x_i):
@@ -224,9 +225,10 @@ if __name__ == '__main__':
             z_lower, z_upper = z_true[z_idx[0]], z_true[z_idx[1]]
             
             if z_lower in L.keys():
+                # cooling rate already calculated for z_lowe
                 L_lower = L[z_lower]
             else:
-                tablename_lower =  'z_{:.3f}.hdf5'.format(z_lower)
+                tablename_lower = 'z_{:.3f}.hdf5'.format(z_lower)
                 tables_lower = h5py.File(os.path.join(datadir, tablename_lower),'r')
                 # Calculate lower cooling rate
                 T, L_lower = coolingrate(
@@ -238,10 +240,10 @@ if __name__ == '__main__':
                 L[z_lower] = L_lower
 
             if z_upper in L.keys():
+                # cooling rate already calculated for z_upper
                 L_upper = L[z_upper]
-      
             else:
-                tablename_upper =  'z_{:.3f}.hdf5'.format(z_upper)
+                tablename_upper = 'z_{:.3f}.hdf5'.format(z_upper)
                 tables_upper = h5py.File(os.path.join(datadir, tablename_upper),'r')
                 # Calculate upper cooling rate
                 T, L_upper = coolingrate(
@@ -253,9 +255,9 @@ if __name__ == '__main__':
                 L[z_upper] = L_upper
 
             # interpolate cooling rate for z_i
-            
             L_i = interpolate(L_lower, L_upper, z_lower, z_upper, z_i)
         
+        # Plotting cooling rate as a function of time
         plt.loglog(T, L_i, label=r'$z={:.3f}$'.format(z_i))
         plt.text(
             x=1e2, 

@@ -1,7 +1,7 @@
 import numpy as np
 
 def write_mat_to_file(M, filename):
-    """Writing Matrix to a file with 5 decimal numbers.
+    """ Writing Matrix to a file with 5 decimal numbers.
 
     Args:
         M (list): n x m list/array
@@ -18,7 +18,7 @@ def write_mat_to_file(M, filename):
         f.write(file)
 
 def write_vec_to_file(f, filename):
-    """Writing list as column vector to a file with 9 decimal numbers.
+    """ Writing list as column vector to a file with 9 decimal numbers.
 
     Args:
         f (list): list/array
@@ -65,6 +65,18 @@ def crout(M, separate=False):
     return M
 
 def solve(LU, b):
+    """ Solve LUx=b for x using LU decomposed matrix. L should have 1s on the 
+    diagonal and L and U should be stored in the same array. The algorithm 
+    solves the system by first solving Ly = b for y (forward pass) and than 
+    Ux = y for x (backward pass).
+
+    Args:
+        LU (numpy.array): Numpy array (n x n) containing LU decomposition. 
+        b (np.array): Numpy array (n) containg column vector.
+
+    Returns:
+        np.array: solution vector
+    """
     # list since it will be appended and no numpy attributes required from y.
     y = []
     # Forward pass through matrix to solve Ly = b for y.
