@@ -60,7 +60,9 @@ python3 code/problem2.py
 echo "Run the third problem ..."
 python3 code/problem3.py
 
+# Run twice to prevent undefined references
 echo "Generating the pdf"
+pdflatex -interaction=batchmode -jobname=solutions main.tex
 pdflatex -interaction=batchmode -jobname=solutions main.tex
 
 echo "All done! Results saved to solutions.pdf."
