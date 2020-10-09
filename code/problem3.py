@@ -218,8 +218,7 @@ if __name__ == '__main__':
         p = poisson(np.int64(k),np.int64(l))
         doc += 'P({},{}) = {:.7E}'.format(l,k,p)
         doc += '\n'
-
-    print(doc)
+    doc = doc.strip()
 
     # Write to file
     with open('./output/3c_poisson.txt', 'w') as f:
