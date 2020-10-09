@@ -1,4 +1,5 @@
 import os
+import time
 
 import h5py
 from tqdm import tqdm
@@ -42,7 +43,6 @@ def coolingrate(tables, density, He_mass_frac=0.258, metallicity=0.25):
         List with temperatures and list with cooling rates as function of 
         temperature.
     """
-
     # list of all elements in table
     elements = [
         x for x in tables.keys() if x not in [
@@ -195,8 +195,7 @@ if __name__ == '__main__':
     z_min, z_max, z_step = 0, 9, 100
     z_range = np.linspace(z_min, z_max, z_step)
 
-    L = []
-    z_lower_prev, z_upper_prev = -1,-1
+    L = {} # using a dictionary in order to prevent unnecessary reads of tables
     print("Generating plots for video ...")
     for z_i in tqdm(z_range): 
         
@@ -204,14 +203,14 @@ if __name__ == '__main__':
             # if z_i in tables, use that insted of interpolating.
             tablename = 'z_{:.3f}.hdf5'.format(z_i)
             tables = h5py.File(os.path.join(datadir, tablename), 'r')
+            
             T, L_i = coolingrate(
                 tables=tables, 
                 density=n, 
                 He_mass_frac=0.258, 
                 metallicity=metallicity
             )
-            L.append(L_i)
-            z_upper_prev = z_i
+            L[z_i] = L_i
         else:
             # Find neigboring x values
             z_idx = bisect(z_true, z_i)
@@ -221,7 +220,9 @@ if __name__ == '__main__':
 
             z_lower, z_upper = z_true[z_idx[0]], z_true[z_idx[1]]
             
-            if z_lower_prev != z_lower:
+            if z_lower in L.keys():
+                L_lower = L[z_lower]
+            else:
                 tablename_lower =  'z_{:.3f}.hdf5'.format(z_lower)
                 tables_lower = h5py.File(os.path.join(datadir, tablename_lower),'r')
                 # Calculate lower cooling rate
@@ -231,26 +232,26 @@ if __name__ == '__main__':
                     He_mass_frac=0.258, 
                     metallicity=metallicity
                 )
-            if z_lower == z_upper_prev:
-                T, L_lower = T, L_upper
-            if z_upper_prev != z_upper:
+                L[z_lower] = L_lower
+
+            if z_upper in L.keys():
+                L_upper = L[z_upper]
+      
+            else:
                 tablename_upper =  'z_{:.3f}.hdf5'.format(z_upper)
                 tables_upper = h5py.File(os.path.join(datadir, tablename_upper),'r')
                 # Calculate upper cooling rate
-                _, L_upper = coolingrate(
+                T, L_upper = coolingrate(
                     tables=tables_upper, 
                     density=n, 
                     He_mass_frac=0.258, 
                     metallicity=metallicity
                 )
-            
-            # interpolate cooling rate for z_i
-            L_i = interpolate(L_lower, L_upper, z_lower, z_upper, z_i)
-            
-            L.append(L_i)
+                L[z_upper] = L_upper
 
-            z_lower_prev = z_lower
-            z_upper_prev = z_upper    
+            # interpolate cooling rate for z_i
+            
+            L_i = interpolate(L_lower, L_upper, z_lower, z_upper, z_i)
         
         plt.loglog(T, L_i, label=r'$z={:.3f}$'.format(z_i))
         plt.text(
@@ -268,5 +269,4 @@ if __name__ == '__main__':
         plt.axis(ymin=1e-27, ymax=1e-19)
         plt.savefig('plots/coolingrate_z{}.png'.format(z_i))
         plt.close()
-
         
