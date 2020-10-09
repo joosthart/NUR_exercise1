@@ -28,7 +28,8 @@ if [ ! -d "data/CoolingTables" ]; then
   mv CoolingTables data/CoolingTables
 fi
 
-# Creating virtual environment and installing dependencies
+
+echo "Creating virtual environment and install dependencies."
 python3 -m venv env
 source env/bin/activate
 pip3 install -r requirements.txt
@@ -60,7 +61,9 @@ echo "Run the third problem ..."
 python3 code/problem3.py
 
 echo "Generating the pdf"
-pdflatex -interaction=nonstopmode -jobname=solutions main.tex
+pdflatex -interaction=batchmode -jobname=solutions main.tex
+
+echo "All done! Results saved to solutions.pdf."
 
 
 

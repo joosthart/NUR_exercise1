@@ -155,7 +155,6 @@ def poisson(k,l):
 if __name__ == '__main__':
     
     # 3a
-
     # parameters
     a=2.2 
     b=0.5
@@ -167,15 +166,11 @@ if __name__ == '__main__':
     # Using the value of the integral, calculate the estimate for A.
     A = 1/(4*np.pi*b**2*integral) # * r_vir^{-3}
 
-    print('Solution for 3a:')
-    print('Obtained value for A: {:.8f} r_vir^-3'.format(A)) # solution for A
-
     # Write to file
     with open('./output/3a_a.dat', 'w') as f:
         f.write('{:.8f}'.format(A))
 
     # 3b
-    
     # Points used for interpolation
     points = np.array([1e-4, 1e-2, 1e-1, 1, 5])
     # Function evaluations at the above points
@@ -217,14 +212,13 @@ if __name__ == '__main__':
     # Combinations of (k,l)
     kl = [(0,1), (10,5), (21,3), (40,2.6), (200, 101)]
 
-    print('Solution for 3c:')
     doc = ''
     for k, l in kl:
         # Calculate Possion probabilities for (k,l) combinations.
         p = poisson(np.int64(k),np.int64(l))
         doc += 'P({},{}) = {:.7E}'.format(l,k,p)
         doc += '\n'
-    doc = doc.strip()
+
     print(doc)
 
     # Write to file
