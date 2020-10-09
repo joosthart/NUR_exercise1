@@ -17,18 +17,37 @@ The goal is to find a solution for the unknown $f_j$. Note that equation \ref{eq
 \end{equation}
 This equation can be solved for $\mathbf{f}$ numerically using an LU decomposition. To calculate the LU matrix, Crout's algorithm is used. The L and U matrices are stored in one $16 \times 16$ array, using the fact that the diagonal of the L matrix only contains 1s.
 
-Inspection of the matrix $W_{ss}$ showed that the maximum row values are already on the diagonal. Therefore, no pivoting is needed. Ones obtained the LU matrix, the system is solved for $\mathbf{f}$ using first forward substitution on the upper half of the LU matrix, followed by backward substitution of the lower half. The LU matrix and the solution for $\mathbf{f}$ are written to the terminal when running \texttt{run.sh}.
+Inspection of the matrix $W_{ss}$ showed that the maximum row values are already on the diagonal. Therefore, no pivoting is needed. Ones obtained the LU matrix, the system is solved for $\mathbf{f}$ using first forward substitution on the upper half of the LU matrix, followed by backward substitution of the lower half. The obtained $L$ and $U$ matrices and the obtained values for $\mathbf{f}$ are shown in figures \ref{fig:2a_L}, \ref{fig:2a_U} and \ref{fig:2a_f}, respectively.
+
+\begin{figure}[H]
+    \centering
+    \lstinputlisting[basicstyle=\ttfamily\tiny]{output/2a_L_matrix.txt}
+    \caption{L matrix}
+    \label{fig:2a_L}
+\end{figure}
+
+\begin{figure}[H]
+    \centering
+    \lstinputlisting[basicstyle=\ttfamily\tiny]{output/2a_U_matrix.txt}
+    \caption{U matrix}
+    \label{fig:2a_U}
+\end{figure}
+
+\begin{figure}[H]
+    \centering
+    \lstinputlisting[basicstyle=\ttfamily, xleftmargin=.4\textwidth]{output/2a_f_vector.txt}
+    \caption{Obtained $\mathbf{f}$ using above L and U matrices.}
+    \label{fig:2a_f}
+\end{figure}
+
+\newpage
 
 \subsection*{2b}
-In this exercise, a single iterative improvement on the estimation of $\mathbf{f}$ is performed. The estimation, $\hat{\mathbf{f}}$, is the sum of the true solution and an error vector. An error of the estimation can be calculated with
+In this exercise, a single iterative improvement on the estimation of $\mathbf{f}$ is performed. The estimation, $\hat{\mathbf{f}}$, is the sum of the true solution and an error vector, $\hat{\mathbf{f}} = \mathbf{f} + \mathbf{\delta}_f.$. In the perfect case $\mathbf{f}_\delta=0$. Since there are always errors involved with numeric analysis, generally $\mathbf{f}_\delta\neq 0$. An error of the estimation can be calculated with
 \begin{equation}
     \mathbf{f}_\delta = W_{ss}\mathbf{\hat{f}} - W_{gs},
 \end{equation}
-where $\mathbf{\hat{f}}$ is the estimated $\mathbf{f}$ and $\mathbf{f}_\delta$ the difference with the real solution. In the perfect case $\mathbf{f}_\delta=0$. Since there are always errors involved with numeric analysis, generally $\mathbf{f}_\delta\neq 0$. $\hat{\mathbf{f}}$ can thus be descibed as
-\begin{equation}
-    \hat{\mathbf{f}} = \mathbf{f} + \mathbf{\delta}_f.
-\end{equation}
-Using the above we can write
+where $\mathbf{f}_\delta$ is the difference with the real solution. Using this equation we can write
 \begin{equation}
     W_{ss}\hat{\mathbf{f}} = W_{ss}(\mathbf{f} + \mathbf{\delta}_f) = W_{gs}.
 \end{equation}
@@ -36,17 +55,24 @@ This can be rewritten to obtain
 \begin{equation}
     W_{ss}\mathbf{\delta}_f = W_{ss}\mathbf{\hat{f}} - W_{gs} = \hat{\mathbf{f}}_\delta.
 \end{equation}
-We can thus solve for $\mathbf{\delta}_f$ and subtract this from our initial estimate $\hat{\mathbf{f}}_\delta$.
+We can thus solve for $\mathbf{\delta}_f$ and subtract this from our initial estimate $\hat{\mathbf{f}}$ to obtain a single iterative improvement.
 
-This method is used in the code below to calculate a first order improvement on the estimate. My first version of the code used for-loops to solve the equations using the generated LU-decomposition. I later realized that I could also do it with matrix operations and implemented that, since it is more efficient. In my first version, the estimate improved a few orders of magnitude when doing a first order improvement. However, in my new version, the fist estimate was significantly better than with the for-loop method. A single iterative improvement makes the prediction worse in my latest version of the code. I think that this is due to the accumulation of errors in the for-loop method. The current method with matrix operations might accumulate less round off errors while solving the system. The sum of $\hat{\mathbf{f}}$ of the first estimate is just $\sim 10^-8$ different from 1. This is close to single point precision. A single iterative improvement would not improve the estimate, since it is machine error limited.
+This method is used in the code below to calculate a first order improvement on the estimate in 2a. My first version of the code used for-loops to solve the equations using the generated LU-decomposition. I later realized that I could also do it with matrix operations and implemented that, since it is more efficient in Python. In my first version, the estimate improved a few orders of magnitude when doing a first order improvement. However, in my new version, the fist estimate was significantly better than with the for-loop method. A single iterative improvement makes the prediction worse in my latest version of the code. I think that this is due to the accumulation of errors in the for-loop method. The current method with matrix operations might accumulate less round off errors while solving the system. The sum of $\hat{\mathbf{f}}$ of the first estimate is just $\sim 10^-8$ different from 1. This means that the solution is machine error limited for single point precision. Therefore, single iterative improvement would not improve the estimate.
 
 The code is also tested with double point precision. In this case single iterative improvement does improve the estimate.
 
+In figure \ref{fig:2b_f}, the single iterative improved f is shown.
 
+\begin{figure}[h!]
+    \centering
+    \lstinputlisting[basicstyle=\ttfamily, xleftmargin=.4\textwidth]{output/2a_f_vector.txt}
+    \caption{Obtained $\mathbf{f}$ after single iterative improvement.}
+    \label{fig:2b_f}
+\end{figure}
 
 \subsection*{Code}
 
-\lstinputlisting{problem2.py}
+\lstinputlisting[language=python]{problem2.py}
 
 
 \newpage

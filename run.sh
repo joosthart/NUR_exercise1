@@ -14,6 +14,12 @@ if [ ! -d "data" ]; then
   mkdir data
 fi
 
+echo "Creating the output directory if it does not exist"
+if [ ! -d "output" ]; then
+  echo "Directory does not exist create it!"
+  mkdir output
+fi
+
 echo "Download data for problem 1."
 if [ ! -d "data/CoolingTables" ]; then
   wget https://www.strw.leidenuniv.nl/WSS08/coolingtables_highres.tar.gz

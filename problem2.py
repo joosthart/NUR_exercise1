@@ -1,11 +1,22 @@
 import numpy as np
 
-def matprint(mat, fmt="g"):
-    col_maxes = [max([len(("{:"+fmt+"}").format(x)) for x in col]) for col in mat.T]
-    for x in mat:
-        for i, y in enumerate(x):
-            print(("{:"+str(col_maxes[i])+fmt+"}").format(y), end="  ")
-        print("")
+def write_mat_to_file(M, filename):
+    file=''
+    for i in range(M.shape[0]):
+        line = ''
+        for j in range(M.shape[1]):
+            line += '{: 3.5f} '.format(M[i,j])
+        file += line 
+        file += '\n'
+    with open(filename, 'w') as f:
+        f.write(file)
+
+def write_vec_to_file(f, filename):
+    file=''
+    for i in range(f.shape[0]):
+        file += '{:.9f}\n'.format(f[i])
+    with open(filename, 'w') as f:
+        f.write(file.strip())
 
 def crout(M, separate=False):
     """ Generating LU-composition for input matrix M Using the improved Crout's 
@@ -28,6 +39,7 @@ def crout(M, separate=False):
                 M[i,j] = M[i,j]-M[i,k]*M[k,j]
     
     if separate:
+        # Splitting LU matrix intp two separate matrices, L and U.
         L = np.zeros(M.shape, dtype=np.dtype(M[0,0]))
         U = np.zeros(M.shape, dtype=np.dtype(M[0,0]))
         for i in range((M.shape[0])):
@@ -39,10 +51,15 @@ def crout(M, separate=False):
     return M
 
 def solve(LU, b):
+    # list since it will be appended and no numpy attributes required from y.
     y = []
+    # Forward pass through matrix to solve Ly = b for y.
     for i in range(len(b)):
+        # Dot product used instead of sum
         y.append(b[i] - LU[i,:i].dot(y[:i]))
+    # Backward pass through matrix to solve Ux = y for x.
     for j in reversed(range(len(b))):
+        # Dot product used instead of sum
         b[j] = 1/LU[j,j] * (y[j] - LU[j,j+1:].dot(b[j+1:]))
     return b
 
@@ -51,19 +68,41 @@ if __name__ == '__main__':
     Wgs = np.loadtxt('data/wgs.dat', dtype=np.float32)
 
     # 2a
-    L, U = crout(np.copy(Wss), True)
+    # Calculating separate L and U matrix.
+    L, U = crout(np.copy(Wss), separate=True)
     print('Solutions for 2a:')
     print('LU decomposition of Wgs:')
-    print('L: {}'.format(L))
-    print('U: {}'.format(U))
+    print('L: {}'.format(L)) # output L matrix
+    print('U: {}'.format(U)) # output U matrix
+
+    # Writing matrices to file
+    write_mat_to_file(L, 'output/2a_L_matrix.txt')
+    write_mat_to_file(U, 'output/2a_U_matrix.txt')
+
+
+    # The LU is calculated again, since the solve function expects the LU-matries
+    # in 1 matrix. Calculating it again is a waste of computing power, but it is
+    # in order to print the L and U part separate, as asked in the exercise. 
+    LU = crout(np.copy(Wss), separate=False)
+    # Solving LU*x=Wgs for x.
     x_hat = solve(LU, np.copy(Wgs))
-    print('Solution for f: {}'.format(x_hat))
-    print('Sum of f: {}'.format(sum(x_hat)))
+    print('Solution for f: {}'.format(x_hat)) # output solution for x
+    print('Sum of f: {}'.format(sum(x_hat))) # output sum of y
+
+    # Write vector to file
+    write_vec_to_file(x_hat, 'output/2a_f_vector.txt')
 
     # 2b
     print('Solutions for 2b:')
+    # Calculate residual vector, b_res.
     b_res = Wss.dot(x_hat) - Wgs
+    # Solving LU*x_delta = b_res for x_delta.
     x_delta = solve(LU, np.copy(b_res))
+    # Calculate first iterative improvement of x
     x_hat_second = x_hat - x_delta
-    print('Improved f: {}'.format(x_hat_second))
-    print('Sum of improved f {}'.format(sum(x_hat_second)))
+    print('Improved f: {}'.format(x_hat_second)) # output first iterative 
+                                                 # improvement of x
+    print('Sum of improved f {}'.format(sum(x_hat_second))) # output sum of x
+
+    # write vector to file
+    write_vec_to_file(x_hat_second, 'output/2b_f_vector.txt')
