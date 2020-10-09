@@ -5,6 +5,9 @@ import h5py
 from tqdm import tqdm
 import numpy as np
 import matplotlib.pyplot as plt
+import matplotlib
+
+matplotlib.use('Agg')
 
 def bisect(x_range, x_i):
     """ Find the indices of elements in x_range that enclose x_i. If x_i outside 
