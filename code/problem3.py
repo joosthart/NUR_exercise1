@@ -139,13 +139,18 @@ def poisson(k,l):
             not isinstance(k, np.int64)
          ):
         raise ValueError("k should be an integer not {}.".format(type(k)))
-
-    p = 1
-    # Calculate l^k/k!*e^-l using a product
-    e = np.exp(-l/k) # calculate ones
-    for f in range(1, k+1):
-        p*=l/f*e
-    return p
+    elif k < 0:
+        ValueError("k should be larger than 0.")
+    if k == 0:
+        # l^k=1 and k! = 1
+        return np.exp(-l)
+    else:
+        p = 1
+        # Calculate l^k/k!*e^-l using a product
+        e = np.exp(-l/k) # calculate ones
+        for f in range(1, k+1):
+            p*=l/f*e
+        return p
 
 if __name__ == '__main__':
     

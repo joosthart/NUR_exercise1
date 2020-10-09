@@ -82,12 +82,9 @@ if __name__ == '__main__':
     Wgs = np.loadtxt('data/wgs.dat', dtype=np.float32)
 
     # 2a
+    
     # Calculating separate L and U matrix.
     L, U = crout(np.copy(Wss), separate=True)
-    print('Solutions for 2a:')
-    print('LU decomposition of Wgs:')
-    print('L: {}'.format(L)) # output L matrix
-    print('U: {}'.format(U)) # output U matrix
 
     # Writing matrices to file
     write_mat_to_file(L, 'output/2a_L_matrix.txt')
@@ -99,24 +96,27 @@ if __name__ == '__main__':
     # in order to print the L and U part separate, as asked in the exercise. 
     LU = crout(np.copy(Wss), separate=False)
     # Solving LU*x=Wgs for x.
-    x_hat = solve(LU, np.copy(Wgs))
-    print('Solution for f: {}'.format(x_hat)) # output solution for x
-    print('Sum of f: {}'.format(sum(x_hat))) # output sum of y
+    x_hat = solve(LU, np.copy(Wgs))    
+    
+    # Write sum of f to file
+    with open('output/2a_f_vector_sum.dat', 'w') as f:
+        f.write('{:.9f}'.format(sum(x_hat)))
 
     # Write vector to file
     write_vec_to_file(x_hat, 'output/2a_f_vector.txt')
 
     # 2b
-    print('Solutions for 2b:')
+
     # Calculate residual vector, b_res.
     b_res = Wss.dot(x_hat) - Wgs
     # Solving LU*x_delta = b_res for x_delta.
     x_delta = solve(LU, np.copy(b_res))
     # Calculate first iterative improvement of x
     x_hat_second = x_hat - x_delta
-    print('Improved f: {}'.format(x_hat_second)) # output first iterative 
-                                                 # improvement of x
-    print('Sum of improved f {}'.format(sum(x_hat_second))) # output sum of x
 
-    # write vector to file
+    # Write sum of single iterative improvement f to file
+    with open('output/2b_f_vector_sum.dat', 'w') as f:
+        f.write('{:.9f}'.format(sum(x_hat_second)))
+
+    # write vector of single iterative improvement to file
     write_vec_to_file(x_hat_second, 'output/2b_f_vector.txt')

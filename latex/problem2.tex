@@ -17,7 +17,7 @@ The goal is to find a solution for the unknown $f_j$. Note that equation \ref{eq
 \end{equation}
 This equation can be solved for $\mathbf{f}$ numerically using an LU decomposition. To calculate the LU matrix, Crout's algorithm is used. The L and U matrices are stored in one $16 \times 16$ array, using the fact that the diagonal of the L matrix only contains 1s.
 
-Inspection of the matrix $W_{ss}$ showed that the maximum row values are already on the diagonal. Therefore, no pivoting is needed. Ones obtained the LU matrix, the system is solved for $\mathbf{f}$ using first forward substitution on the upper half of the LU matrix, followed by backward substitution of the lower half. The obtained $L$ and $U$ matrices and the obtained values for $\mathbf{f}$ are shown in figures \ref{fig:2a_L}, \ref{fig:2a_U} and \ref{fig:2a_f}, respectively.
+Inspection of the matrix $W_{ss}$ showed that the maximum row values are already on the diagonal. Therefore, no pivoting is needed. Ones obtained the LU matrix, the system is solved for $\mathbf{f}$ using first forward substitution on the upper half of the LU matrix, followed by backward substitution of the lower half. The obtained $L$ and $U$ matrices and the obtained values for $\mathbf{f}$ are shown in figures \ref{fig:2a_L}, \ref{fig:2a_U} and \ref{fig:2a_f}, respectively. The obtained value of $\sum_j f_j = \input{./output/2a_f_vector_sum.dat}$.
 
 \begin{figure}[!ht]
     \centering
@@ -61,7 +61,7 @@ This method is used in the code below to calculate a first-order improvement on 
 
 The code is also tested with double point precision. In this case, a single iterative improvement does improve the estimate.
 
-In figure \ref{fig:2b_f}, the single iterative improved f is shown.
+In figure \ref{fig:2b_f}, the single iterative improved f is shown. The sum of this vector is \input{./output/2b_f_vector_sum.dat}.
 
 \begin{figure}[!ht]
     \centering
